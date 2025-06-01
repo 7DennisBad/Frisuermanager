@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>DHL Versand</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 600px;
+    }
+    input, select {
+      width: 100%;
+      margin: 5px 0;
+      padding: 0.5rem;
+    }
+    button {
+      margin: 5px 5px 0 0;
+      padding: 0.5rem 1rem;
+    }
+    pre {
+      white-space: pre-wrap;
+      background: #eee;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+<div class="form-box">
+  <h2>📦 DHL Versand</h2>
+
+  <select id="customerSelect" onchange="setCustomerDetails()">
+    <option value="">Wähle Kunde aus</option>
+    <option value="customer1">Kunde 1 - Anna Schmidt</option>
+    <option value="customer2">Kunde 2 - Bernd Müller</option>
+  </select>
+
+  <input id="shipperName" placeholder="Absender Name" />
+  <input id="shipperStreet" placeholder="Absender Straße" />
+  <input id="shipperZip" placeholder="Absender PLZ" />
+  <input id="shipperCity" placeholder="Absender Ort" />
+
+  <input id="consigneeName" placeholder="Empfänger Name" />
+  <input id="consigneeStreet" placeholder="Empfänger Straße" />
+  <input id="consigneeZip" placeholder="Empfänger PLZ" />
+  <input id="consigneeCity" placeholder="Empfänger Ort" />
+
+  <input id="length" placeholder="Länge (mm)" type="number" />
+  <input id="width" placeholder="Breite (mm)" type="number" />
+  <input id="height" placeholder="Höhe (mm)" type="number" />
+  <input id="weight" placeholder="Gewicht (g)" type="number" />
+
+  <button onclick="fillExample()">Beispiel ausfüllen</button>
+  <button onclick="setStandardSize()">Standard</button>
+  <button onclick="clearForm()">Leeren</button>
+  <button onclick="createShipment()">Senden</button>
+
+  <pre id="result"></pre>
+</div>
+
+<script>
+  const customers = {
+    customer1: {
+      name: "Anna Schmidt",
+      street: "Sonnenallee 10",
+      zip: "10115",
+      city: "Berlin"
+    },
+    customer2: {
+      name: "Bernd Müller",
+      street: "Hauptstraße 20",
+      zip: "80331",
+      city: "München"
+    }
+  };
+
+  function getValue(id) {
+    return document.getElementById(id).value;
+  }
+
+  function setCustomerDetails() {
+    const selectedCustomer = customers[document.getElementById("customerSelect").value];
+    if (selectedCustomer) {
+      document.getElementById("consigneeName").value = selectedCustomer.name;
+      document.getElementById("consigneeStreet").value = selectedCustomer.street;
+      document.getElementById("consigneeZip").value = selectedCustomer.zip;
+      document.getElementById("consigneeCity").value = selectedCustomer.city;
+
+      document.getElementById("shipperName").value = "Bob Tschigerillo";
+      document.getElementById("shipperStreet").value = "Salonstraße 1";
+      document.getElementById("shipperZip").value = "12345";
+      document.getElementById("shipperCity").value = "Friseurstadt";
+    }
+  }
+
+  function fillExample() {
+    document.getElementById("shipperName").value = "Max Mustermann";
+    document.getElementById("shipperStreet").value = "Musterstraße 1";
+    document.getElementById("shipperZip").value = "12345";
+    document.getElementById("shipperCity").value = "Musterstadt";
+
+    document.getElementById("consigneeName").value = "Erika Beispiel";
+    document.getElementById("consigneeStreet").value = "Beispielweg 2";
+    document.getElementById("consigneeZip").value = "54321";
+    document.getElementById("consigneeCity").value = "Beispielstadt";
+
+    setStandardSize();
+  }
+
+  function setStandardSize() {
+    document.getElementById("length").value = "300";
+    document.getElementById("width").value = "200";
+    document.getElementById("height").value = "150";
+    document.getElementById("weight").value = "1000";
+  }
+
+  function clearForm() {
+    document.querySelectorAll("input").forEach(input => input.value = "");
+    document.getElementById("customerSelect").value = "";
+  }
+
+  async function createShipment() {
+    const payload = {
+      profile: "STANDARD_GRUPPENPROFIL",
+      shipments: [{
+        product: "V01PAK",
+        billingNumber: "33333333330102",
+        refNo: `Order-${Date.now()}`,
+        shipper: {
+          name1: getValue("shipperName"),
+          addressStreet: getValue("shipperStreet"),
+          postalCode: getValue("shipperZip"),
+          city: getValue("shipperCity"),
+          country: "DEU"
+        },
+        consignee: {
+          name1: getValue("consigneeName"),
+          addressStreet: getValue("consigneeStreet"),
+          postalCode: getValue("consigneeZip"),
+          city: getValue("consigneeCity"),
+          country: "DEU"
+        },
+        details: {
+          dim: { uom: "mm", height: getValue("height"), length: getValue("length"), width: getValue("width") },
+          weight: { uom: "g", value: getValue("weight") }
+        }
+      }]
+    };
+
+    document.getElementById("result").textContent = "⏳ Sende an DHL...";
+
+    try {
+      const res = await fetch("http://localhost:4000/api/dhl/shipment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw data;
+
+      document.getElementById("result").textContent = `Erfolg:\n${JSON.stringify(data, null, 2)}`;
+    } catch (err) {
+      document.getElementById("result").textContent = `Fehler:\n${JSON.stringify(err, null, 2)}`;
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>DHL Token Generator (Client Credentials)</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 600px;
+    }
+    input {
+      width: 100%;
+      margin: 5px 0;
+      padding: 0.5rem;
+    }
+    button {
+      margin-top: 10px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+    pre {
+      white-space: pre-wrap;
+      background: #eee;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    .headline {
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+<div class="form-box">
+  <h2 class="headline">🔐 DHL API Token Generator (Client Credentials)</h2>
+
+  <input id="clientId" placeholder="Client ID (API Key)" />
+  <input id="clientSecret" placeholder="Client Secret" />
+  <button onclick="fetchToken()">Token anfordern</button>
+
+  <pre id="tokenResult">Noch kein Token angefordert.</pre>
+</div>
+
+<script>
+  async function fetchToken() {
+    const clientId = document.getElementById("clientId").value.trim();
+    const clientSecret = document.getElementById("clientSecret").value.trim();
+
+    document.getElementById("tokenResult").textContent = "⏳ Fordere Token an...";
+
+    try {
+      const url = "https://api-sandbox.dhl.com/auth/v1/token";
+
+      const form = new URLSearchParams();
+      form.append('grant_type', 'client_credentials');
+      form.append('client_id', clientId);
+      form.append('client_secret', clientSecret);
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: form
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw data;
+
+      document.getElementById("tokenResult").textContent =
+        `✅ Token erhalten:\n\n${JSON.stringify(data, null, 2)}`;
+    } catch (err) {
+      document.getElementById("tokenResult").textContent =
+        `❌ Fehler beim Abrufen des Tokens:\n\n${JSON.stringify(err, null, 2)}`;
+    }
+  }
+</script>
+</body>
+</html>

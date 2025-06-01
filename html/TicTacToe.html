@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>miniGame</title>
+  <link rel="stylesheet" href="../css/TicTacToe.css">
+  <meta name="description" content="">
+  <meta property="og:title" content="">
+  <meta property="og:type" content="">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <meta property="og:image:alt" content="">
+  <link rel="icon" type="image/png" href="../favicon.ico">
+  <meta name="theme-color" content="#fafafa">
+</head>
+
+
+<body>
+<header id="FirstPageHeader">
+  <div class="container">
+    <h1>Der Haarstudio-Verwalter</h1>
+  </div>
+</header>
+
+<nav id="FirstPageNav">
+  <div class="container">
+    <ul>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Service</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">Functions</a></li>
+    </ul>
+    <div class="custom-button">
+      <a href="../html/login.html">
+        <button type="button">Login</button>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <section id="homemainfunction">
+    <p class="heading">TicTacToe</p>
+  </section>
+</div>
+
+<button type="button" id="restart" onclick="restart()">Restart</button>
+
+<div class="board" id="Board">
+  <div class="cell" id="0"></div>
+  <div class="cell" id="1"></div>
+  <div class="cell" id="2"></div>
+  <div class="cell" id="3"></div>
+  <div class="cell" id="4"></div>
+  <div class="cell" id="5"></div>
+  <div class="cell" id="6"></div>
+  <div class="cell" id="7"></div>
+  <div class="cell" id="8"></div>
+</div>
+
+<div class="winMsgContainer" id="winDisplay"></div>
+
+
+</div>
+
+
+
+<script src="../js/TicTacToe.js"></script>
+
+</body>
+</html>

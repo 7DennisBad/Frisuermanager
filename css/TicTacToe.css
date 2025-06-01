@@ -1,0 +1,217 @@
+/* Allgemeine Einstellungen */
+body {
+  background-color: white;
+  color: black;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6em;
+  margin: 0;
+}
+
+/* Container für zentrierte Inhalte */
+.container {
+  width: 65%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Header */
+#FirstPageHeader {
+  background-color: coral;
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+}
+
+/* Navigation */
+#FirstPageNav {
+  display: flex;
+  background-color: darkgray;
+  color: white;
+  padding: 10px 0;
+}
+
+#FirstPageNav .container {
+  display: flex;
+  width: 65%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Menü */
+#FirstPageNav ul {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  gap: 20px;
+}
+
+#FirstPageNav li {
+  display: inline;
+}
+
+#FirstPageNav a {
+  text-decoration: none;
+  font-size: 18px;
+  color: white;
+  padding: 10px;
+}
+
+/* Login-Button */
+.login {
+  margin-left: auto; /* Schiebt das Login nach rechts */
+  padding: 8px 15px;
+  text-decoration: none;
+  color: white;
+  background-color: coral;
+  border-radius: 5px;
+  height: fit-content;
+}
+
+/* Showcase Bereich */
+#showcase {
+  background-image: url('../img/friseur.jpg');
+  background-position: center right;
+  color: white;
+  text-align: center;
+  padding: 50px 0;
+  min-height: 300px;
+}
+
+#showcase-miniGames {
+  background-image: url('../img/MiniGamesBanner.jpg');
+  background-position: center right;
+  color: white;
+  text-align: center;
+  padding: 50px 0;
+  min-height: 300px;
+}
+
+.custom-button button {
+  background-color: white;
+  color: black;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.custom-button button:hover {
+  background-color: darkorange;
+}
+
+/* Optional: Button in die Mitte setzen */
+.custom-button {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.heading {
+  font-size: 50px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 5px;
+  margin: 20px auto;
+  width: 310px;
+  background-color: #000;
+  padding: 5px;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  cursor: pointer;
+  border: 2px solid black;
+}
+
+.cell:hover {
+  background-color: #ddd;
+}
+
+.winMsgContainer {
+  width: 65%;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 2px solid black;
+}
+
+#showcase h1 {
+  font-size: 50px;
+  line-height: 1.6em;
+  padding-top: 30px;
+}
+
+#main {
+  width: 100%;
+  padding: 20px;
+}
+
+#homemainfunction {
+  min-height: 100%;
+  width: 100%;
+  padding-top:20px;
+  text-align: center;
+}
+
+
+#homemainfunction ul {
+  padding: 8px;
+
+}
+
+#homemainfunction li {
+  font-size: 14px;
+  margin-bottom: 5px; /* Etwas weniger Abstand */
+}
+#restart{
+  margin-left: 500px;
+  margin-top: -100px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 10px;
+
+}
+#restart:hover{
+  background-color: orange;
+}
+
+.card-link:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+@media (max-width: 600px) {
+
+  #main, #homemainfunction {
+    width: 100%;
+  }
+
+  #FirstPageNav
+
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .login {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}
+
+
