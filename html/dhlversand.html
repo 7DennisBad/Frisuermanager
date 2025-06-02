@@ -137,14 +137,14 @@
     document.getElementById("consigneeZip").value = c.zip;
     document.getElementById("consigneeCity").value = c.city;
 
-    document.getElementById("shipperName").value = "Salon Mustercut";
+    document.getElementById("shipperName").value = "Bob Tschigerillo";
     document.getElementById("shipperStreet").value = "Kaiserstraße 10";
     document.getElementById("shipperZip").value = "60311";
     document.getElementById("shipperCity").value = "Frankfurt am Main";
   }
 
   function fillExample() {
-    document.getElementById("shipperName").value = "Salon Mustercut";
+    document.getElementById("shipperName").value = "Bob Tschigerillo";
     document.getElementById("shipperStreet").value = "Kaiserstraße 10";
     document.getElementById("shipperZip").value = "60311";
     document.getElementById("shipperCity").value = "Frankfurt am Main";
@@ -234,7 +234,7 @@
 
         document.getElementById("result").innerHTML = `
           <div class="success">
-            <h3>✅ Versand erfolgreich!</h3>
+            <h3> Versand erfolgreich!</h3>
             <div class="label-info">
               <strong>Sendungsnummer:</strong> ${shipment.shipmentNo}<br>
               <strong>Referenz:</strong> ${shipment.shipmentRefNo}<br>
@@ -243,10 +243,10 @@
             </div>
             ${warnings ? `<div style="margin: 10px 0; color: #856404;">${warnings}</div>` : ''}
             <button class="download-btn" onclick="downloadLabel('${shipment.label.b64}')">
-              📄 Label herunterladen (PDF)
+              Label herunterladen
             </button>
             <details style="margin-top: 10px;">
-              <summary>🔍 Vollständige Antwort anzeigen</summary>
+              <summary> Vollständige Antwort anzeigen</summary>
               <pre>${JSON.stringify(data, null, 2)}</pre>
             </details>
           </div>
@@ -263,7 +263,7 @@
 
       document.getElementById("result").innerHTML = `
         <div class="error">
-          <h3>❌ Fehler beim Versand</h3>
+          <h3> Fehler beim Versand</h3>
           <pre>${errMsg}</pre>
         </div>
       `;

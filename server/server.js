@@ -16,7 +16,7 @@ const DHL_CLIENT_SECRET = process.env.DHL_CLIENT_SECRET || '8zecG2tp386wJ26i';
 const DHL_USERNAME = process.env.DHL_GKP_USERNAME || 'user-valid';
 const DHL_PASSWORD = process.env.DHL_GKP_PASSWORD || 'SandboxPasswort2023!';
 
-// CORS – Erlaube alle lokalen Ports für Entwicklung
+
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true); // z.B. Postman
@@ -30,7 +30,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// Holt ein Auth-Token von DHL (entspricht curl)
+
 async function fetchDHLToken() {
   const params = new URLSearchParams({
     grant_type: 'password',

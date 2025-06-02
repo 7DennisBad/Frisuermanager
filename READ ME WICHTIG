@@ -1,0 +1,2 @@
+npm start:server
+npx serve -l 5500 ./html
