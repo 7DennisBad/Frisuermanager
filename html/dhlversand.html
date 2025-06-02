@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>DHL Versand</title>
-  <link rel="stylesheet" href="../css/style.css">
   <style>
     body {
       font-family: sans-serif;
@@ -11,29 +10,67 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
     }
     .form-box {
       background: white;
       padding: 2rem;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 600px;
+      width: 100%;
+      max-width: 700px;
     }
     input, select {
       width: 100%;
       margin: 5px 0;
       padding: 0.5rem;
+      box-sizing: border-box;
     }
     button {
       margin: 5px 5px 0 0;
       padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+    .success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+    }
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+    }
+    .label-info {
+      background: #e2e8f0;
+      padding: 1rem;
+      border-radius: 4px;
+      margin: 10px 0;
     }
     pre {
       white-space: pre-wrap;
-      background: #eee;
-      padding: 1rem;
-      margin-top: 1rem;
+      word-wrap: break-word;
+      font-size: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .download-btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 10px 0;
     }
   </style>
 </head>
@@ -43,8 +80,8 @@
 
   <select id="customerSelect" onchange="setCustomerDetails()">
     <option value="">Wähle Kunde aus</option>
-    <option value="customer1">Kunde 1 - Anna Schmidt</option>
-    <option value="customer2">Kunde 2 - Bernd Müller</option>
+    <option value="customer1">Kunde 1 – Anna Schmidt (Berlin)</option>
+    <option value="customer2">Kunde 2 – Bernd Müller (München)</option>
   </select>
 
   <input id="shipperName" placeholder="Absender Name" />
@@ -57,9 +94,9 @@
   <input id="consigneeZip" placeholder="Empfänger PLZ" />
   <input id="consigneeCity" placeholder="Empfänger Ort" />
 
-  <input id="length" placeholder="Länge (mm)" type="number" />
-  <input id="width" placeholder="Breite (mm)" type="number" />
-  <input id="height" placeholder="Höhe (mm)" type="number" />
+  <input id="length" placeholder="Länge (cm)" type="number" />
+  <input id="width" placeholder="Breite (cm)" type="number" />
+  <input id="height" placeholder="Höhe (cm)" type="number" />
   <input id="weight" placeholder="Gewicht (g)" type="number" />
 
   <button onclick="fillExample()">Beispiel ausfüllen</button>
@@ -67,20 +104,22 @@
   <button onclick="clearForm()">Leeren</button>
   <button onclick="createShipment()">Senden</button>
 
-  <pre id="result"></pre>
+  <div id="result"></div>
 </div>
 
 <script>
+  const BACKEND_URL = "http://localhost:4000";
+
   const customers = {
     customer1: {
       name: "Anna Schmidt",
-      street: "Sonnenallee 10",
+      street: "Invalidenstraße 117",
       zip: "10115",
       city: "Berlin"
     },
     customer2: {
       name: "Bernd Müller",
-      street: "Hauptstraße 20",
+      street: "Sendlinger Straße 12",
       zip: "80331",
       city: "München"
     }
@@ -91,44 +130,51 @@
   }
 
   function setCustomerDetails() {
-    const selectedCustomer = customers[document.getElementById("customerSelect").value];
-    if (selectedCustomer) {
-      document.getElementById("consigneeName").value = selectedCustomer.name;
-      document.getElementById("consigneeStreet").value = selectedCustomer.street;
-      document.getElementById("consigneeZip").value = selectedCustomer.zip;
-      document.getElementById("consigneeCity").value = selectedCustomer.city;
+    const c = customers[document.getElementById("customerSelect").value];
+    if (!c) return;
+    document.getElementById("consigneeName").value = c.name;
+    document.getElementById("consigneeStreet").value = c.street;
+    document.getElementById("consigneeZip").value = c.zip;
+    document.getElementById("consigneeCity").value = c.city;
 
-      document.getElementById("shipperName").value = "Bob Tschigerillo";
-      document.getElementById("shipperStreet").value = "Salonstraße 1";
-      document.getElementById("shipperZip").value = "12345";
-      document.getElementById("shipperCity").value = "Friseurstadt";
-    }
+    document.getElementById("shipperName").value = "Salon Mustercut";
+    document.getElementById("shipperStreet").value = "Kaiserstraße 10";
+    document.getElementById("shipperZip").value = "60311";
+    document.getElementById("shipperCity").value = "Frankfurt am Main";
   }
 
   function fillExample() {
-    document.getElementById("shipperName").value = "Max Mustermann";
-    document.getElementById("shipperStreet").value = "Musterstraße 1";
-    document.getElementById("shipperZip").value = "12345";
-    document.getElementById("shipperCity").value = "Musterstadt";
+    document.getElementById("shipperName").value = "Salon Mustercut";
+    document.getElementById("shipperStreet").value = "Kaiserstraße 10";
+    document.getElementById("shipperZip").value = "60311";
+    document.getElementById("shipperCity").value = "Frankfurt am Main";
 
-    document.getElementById("consigneeName").value = "Erika Beispiel";
-    document.getElementById("consigneeStreet").value = "Beispielweg 2";
-    document.getElementById("consigneeZip").value = "54321";
-    document.getElementById("consigneeCity").value = "Beispielstadt";
+    document.getElementById("consigneeName").value = "Lena Becker";
+    document.getElementById("consigneeStreet").value = "Hohe Straße 85";
+    document.getElementById("consigneeZip").value = "50667";
+    document.getElementById("consigneeCity").value = "Köln";
 
     setStandardSize();
   }
 
   function setStandardSize() {
-    document.getElementById("length").value = "300";
-    document.getElementById("width").value = "200";
-    document.getElementById("height").value = "150";
-    document.getElementById("weight").value = "1000";
+    document.getElementById("length").value = "60";
+    document.getElementById("width").value = "30";
+    document.getElementById("height").value = "20";
+    document.getElementById("weight").value = "2000";
   }
 
   function clearForm() {
-    document.querySelectorAll("input").forEach(input => input.value = "");
+    document.querySelectorAll("input").forEach(i => i.value = "");
     document.getElementById("customerSelect").value = "";
+    document.getElementById("result").innerHTML = "";
+  }
+
+  function downloadLabel(base64Data) {
+    const link = document.createElement('a');
+    link.href = 'data:application/pdf;base64,' + base64Data;
+    link.download = 'dhl-label.pdf';
+    link.click();
   }
 
   async function createShipment() {
@@ -153,16 +199,21 @@
           country: "DEU"
         },
         details: {
-          dim: { uom: "mm", height: getValue("height"), length: getValue("length"), width: getValue("width") },
+          dim: {
+            uom: "cm",
+            height: getValue("height"),
+            length: getValue("length"),
+            width: getValue("width")
+          },
           weight: { uom: "g", value: getValue("weight") }
         }
       }]
     };
 
-    document.getElementById("result").textContent = "⏳ Sende an DHL...";
+    document.getElementById("result").innerHTML = '<div class="loading">⏳ Sende an DHL...</div>';
 
     try {
-      const res = await fetch("http://localhost:4000/api/dhl/shipment", {
+      const res = await fetch(`${BACKEND_URL}/api/dhl/shipment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -170,11 +221,52 @@
 
       const data = await res.json();
 
-      if (!res.ok) throw data;
+      if (res.ok && data.success) {
+        const shipment = data.data.items[0];
+        const status = data.data.status;
 
-      document.getElementById("result").textContent = `Erfolg:\n${JSON.stringify(data, null, 2)}`;
+        let warnings = '';
+        if (shipment.validationMessages) {
+          warnings = shipment.validationMessages.map(msg =>
+            `⚠️ ${msg.property}: ${msg.validationMessage}`
+          ).join('<br>');
+        }
+
+        document.getElementById("result").innerHTML = `
+          <div class="success">
+            <h3>✅ Versand erfolgreich!</h3>
+            <div class="label-info">
+              <strong>Sendungsnummer:</strong> ${shipment.shipmentNo}<br>
+              <strong>Referenz:</strong> ${shipment.shipmentRefNo}<br>
+              <strong>Routing Code:</strong> ${shipment.routingCode}<br>
+              <strong>Status:</strong> ${status.detail}
+            </div>
+            ${warnings ? `<div style="margin: 10px 0; color: #856404;">${warnings}</div>` : ''}
+            <button class="download-btn" onclick="downloadLabel('${shipment.label.b64}')">
+              📄 Label herunterladen (PDF)
+            </button>
+            <details style="margin-top: 10px;">
+              <summary>🔍 Vollständige Antwort anzeigen</summary>
+              <pre>${JSON.stringify(data, null, 2)}</pre>
+            </details>
+          </div>
+        `;
+      } else {
+        throw data;
+      }
     } catch (err) {
-      document.getElementById("result").textContent = `Fehler:\n${JSON.stringify(err, null, 2)}`;
+      console.error('Fehler beim Versand:', err);
+      let errMsg = '';
+      if (err instanceof Error) errMsg = err.message;
+      else if (typeof err === 'object') errMsg = JSON.stringify(err, null, 2);
+      else errMsg = String(err);
+
+      document.getElementById("result").innerHTML = `
+        <div class="error">
+          <h3>❌ Fehler beim Versand</h3>
+          <pre>${errMsg}</pre>
+        </div>
+      `;
     }
   }
 </script>
